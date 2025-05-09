@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { vapi } from '@/lib/vapi.sdk'
+import { vapi } from '@/lib/vapi.sdk';
 
 enum CallStatus {
     INACTIVE = 'INACTIVE',
@@ -76,6 +76,17 @@ const Agent = ({userName, userId, type }: AgentProps) => {
             }
         })
     }
+
+    const handleDisconnect = async () => {
+        setCallStatus(CallStatus.FINISHED);
+
+       vapi.stop();
+    }
+
+    const latestMessage = messages[messages.length - 1]?.content;
+
+    const isCallInactiveOrFinished = callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED;
+    
   return (
     <>
         <div className='call-view'>
@@ -108,27 +119,26 @@ const Agent = ({userName, userId, type }: AgentProps) => {
         {messages.length > 0 && (
             <div className='transcript-border'>
                 <div className='transcript'>
-                    <p key={lastMessage} className={cn('transition-opacity duration-500 opacity-0', 'animate-fadeIn opacity-100')}>
-                        {lastMessage}
+                    <p key={latestMessage} className={cn('transition-opacity duration-500 opacity-0', 'animate-fadeIn opacity-100')}>
+                        {latestMessage}
                     </p>
                 </div>
             </div>
         )}
         <div className='w-full flex justify-center'>
             {callStatus !== 'ACTIVE' ? (
-                <button className='relative btn-call'>
+                <button className='relative btn-call' onClick={handleCall}>
                     <span 
-                    className={cn('absolute animate-ping rounded-full opacity-75', callStatus !== 'CONNECTING' & 'hidden')}
+                    className={cn('absolute animate-ping rounded-full opacity-75', callStatus !== 'CONNECTING' && 'hidden')}
                     
                     />
 
                     <span>
-                        {callStatus == 'INACTIVE' || 
-                        callStatus == 'FINISHED' ? 'Call' : '. . .' }
+                        {isCallInactiveOrFinished ? 'Call' : '. . .' }
                     </span>
                 </button>
             ) : (
-                <button className='btn-disconnect'>
+                <button className='btn-disconnect' onClick={handleDisconnect}>
                     End
                 </button>
             )}

@@ -3,6 +3,8 @@ import { getRandomInterviewCover } from "@/lib/utils";
 import { google } from "@ai-sdk/google";
 import { generateText } from 'ai';
 
+
+//create an API route
 export async function GET() {
     return Response.json(
         {

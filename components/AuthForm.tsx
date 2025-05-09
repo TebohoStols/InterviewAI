@@ -60,7 +60,7 @@ const AuthForm = ({type}: {type: FormType}) => {
                     password,
                 })
 
-                if(!result.success){
+                if(!result?.success){
                     toast.error(result?.message);
                     return;
                 }
@@ -68,6 +68,7 @@ const AuthForm = ({type}: {type: FormType}) => {
                 toast.success('Account created succesfully. Redirecting you to the sign-in page...')
                 router.push('/sign-in')
 
+                
             } else {
                 const {email, password} = values;
 
